@@ -1,0 +1,11 @@
+version: '3'
+services:
+  phishing-app:
+    build: .
+    container_name: phishing-node-stack
+    ports:
+      - "7860:7860"  # Maps Langflow Port
+      - "3000:3000"  # Maps Node.js Port
+    restart: always
+    environment:
+      - LANGFLOW_SKIP_AUTH_AUTO_LOGIN=true

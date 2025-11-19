@@ -1,0 +1,35 @@
+name: Docker Build Pipeline
+
+# Run this workflow every time code is pushed to main
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Get the code
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    # 2. Setup Docker builder
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    # 3. Build the Image
+    # If this step fails (Red X), the code is broken.
+    # If it passes (Green Check), the code is safe to deploy.
+    - name: Build Docker Image
+      run: |
+        docker build -t phishing-app .
+
+    # 4. Smoke Test
+    # Briefly runs the container to check versions
+    - name: Verify Versions
+      run: |
+        docker run --rm phishing-app python --version
+        docker run --rm phishing-app node --version
